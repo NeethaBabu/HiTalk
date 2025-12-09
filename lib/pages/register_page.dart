@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:msg_app/auth/auth_services.dart';
 
 import '../components/common_button.dart';
 import '../components/custom_text_field.dart';
@@ -11,6 +12,28 @@ class RegisterPage extends StatelessWidget {
   final void Function()? onTap;
 
   RegisterPage({super.key, this.onTap});
+
+  void register(BuildContext context) async {
+    final _auth =AuthServices();
+    //password match
+    if(passwordController.text==confirmPswController.text) {
+      try {
+        await _auth.signUpWithEmailPassword(
+            emailController.text, passwordController.text);
+      }
+      catch(e) {
+        showDialog(context: context, builder: (context)=> AlertDialog(
+          title: Text("Error"),
+          content: Text(e.toString()),
+        ));
+      }
+    }
+    else {
+      showDialog(context: context, builder: (context)=> AlertDialog(
+        title: Text("Ooh its not matching"),
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +61,7 @@ class RegisterPage extends StatelessWidget {
             controller: confirmPswController,
           ),
           SizedBox(height: 35),
-          CommonButton(text: 'J O I N', onTap: () {}),
+          CommonButton(text: 'J O I N', onTap: ()=>register(context)),
           SizedBox(height: 25),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
